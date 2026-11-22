@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useTranslation } from "@/store/language"
-import { ArrowRightIcon, DownloadIcon } from "@radix-ui/react-icons"
+import { ArrowRightIcon } from "@radix-ui/react-icons"
 import { gsap } from "gsap"
 import Link from "next/link"
 
@@ -11,42 +11,24 @@ export default function HeroContent() {
   useEffect(() => {
     const q = gsap.utils.selector(sectionRef)
 
-    const textAnimationTimeline = gsap.timeline({
-      defaults: { stagger: 0.2, duration: 0.3 },
+    const media = gsap.matchMedia()
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.timeline({ defaults: { stagger: 0.2, duration: 0.3 } })
+        .fromTo(q(".text-animation"), { y: 100 }, { y: 0 })
+        .fromTo(q(".bio-animation"), { scale: 0 }, { scale: 1, ease: "back", duration: 0.3 })
     })
-
-    textAnimationTimeline.fromTo(
-      q(".text-animation"),
-      {
-        y: 100,
-      },
-      {
-        y: 0,
-        delay: 2.2,
-      }
-    )
-    textAnimationTimeline.fromTo(
-      ".bio-animation ",
-      {
-        scale: 0,
-      },
-      {
-        scale: 1,
-        ease: "back",
-        duration: 0.3,
-      }
-    )
+    return () => media.revert()
   }, [])
 
   return (
     <div
       ref={sectionRef}
-      className="absolute max-w-[55rem] m-auto w-full top-[20%] md:top-[50%] left-[50%] -translate-x-1/2 md:-translate-y-1/2 flex flex-col gap-4 justify-center items-center"
+      className="relative z-20 max-w-[55rem] m-auto w-full px-4 py-24 text-center flex flex-col gap-4 justify-center items-center"
     >
       <div className="overflow-hidden">
-        <div className="text-animation  dark:bg-[linear-gradient(#fff,rgba(255,255,255,.6))] inline-block text-black dark:text-transparent bg-clip-text leading-none text-4xl md:text-6xl font-semibold">
+        <h1 className="text-animation dark:bg-[linear-gradient(#fff,rgba(255,255,255,.6))] inline-block text-black dark:text-transparent bg-clip-text leading-tight text-4xl md:text-6xl font-semibold">
           {t.hero.intro}
-        </div>
+        </h1>
       </div>
 
       <div className="overflow-hidden">
@@ -57,19 +39,19 @@ export default function HeroContent() {
         </div>
       </div>
 
-      <div className="w-[300px] md:w-[370px] relative z-30 text-center text-sm dark:bg-[linear-gradient(#fff,rgba(255,255,255,.6))] inline-block text-black dark:text-transparent bg-clip-text">
+      <div className="w-[300px] max-w-full md:w-[370px] relative z-30 text-center text-sm dark:bg-[linear-gradient(#fff,rgba(255,255,255,.6))] inline-block text-black dark:text-transparent bg-clip-text">
         {t.hero.bio}
       </div>
 
-      <div className="bio-animation dark:bg-[linear-gradient(#fff,rgba(255,255,255,.6))] inline-block text-black dark:text-transparent bg-clip-text text-md md:text-lg">
+      <div className="bio-animation max-w-lg text-sm md:text-base text-gray-700 dark:text-gray-300">
         {t.hero.tagline}
       </div>
 
-      <div className="flex items-center gap-3 mt-10 md:mt-3">
+      <div className="flex flex-wrap justify-center items-center gap-3 mt-5">
         <Link
           href="#contact"
           aria-label={t.hero.contactBtn}
-          className="contact_me_btn px-4 py-[6px] shadow-md group flex items-center gap-2"
+          className="contact_me_btn min-h-11 px-4 py-[6px] shadow-md group flex items-center gap-2"
         >
           <div className="dark:text-black relative z-[3] text-sm">
             {t.hero.contactBtn}
@@ -85,14 +67,11 @@ export default function HeroContent() {
         </Link>
 
         <Link
-          href="https://drive.google.com/drive/folders/1mcpduJNmaqj8v3n-clbxKU6qfMGdRXuN"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={t.hero.downloadCV}
-          className="px-4 py-[6px] text-sm border border-accentColor text-accentColor hover:bg-accentColor hover:text-black transition-colors flex items-center gap-2"
+          href="#project"
+          aria-label={t.hero.viewProject}
+          className="min-h-11 px-4 py-[6px] text-sm border border-accentColor text-accentColor hover:bg-accentColor hover:text-black transition-colors flex items-center gap-2"
         >
-          <span>{t.hero.downloadCV}</span>
-          <DownloadIcon className="flex-none" />
+          <span>{t.hero.viewProject}</span>
         </Link>
       </div>
     </div>

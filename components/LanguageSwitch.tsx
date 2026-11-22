@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { useLanguageStore } from "@/store/language"
+import { useLanguageStore, useTranslation } from "@/store/language"
 import { useSectionStore } from "@/store/section"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,7 +15,9 @@ import {
 
 export default function LanguageSwitch() {
   const { section } = useSectionStore()
+  const isHome = usePathname() === "/"
   const { language, setLanguage } = useLanguageStore()
+  const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -26,15 +29,14 @@ export default function LanguageSwitch() {
       <DropdownMenuTrigger asChild>
         <Button
           className={cn(
-            "dark:hover:bg-gray-800 hover:backdrop-opacity-10 text-xs font-semibold uppercase tracking-wide dark:text-white",
-            section === "#project" && "dark:text-black"
+            "h-11 w-11 dark:hover:bg-gray-800 hover:backdrop-opacity-10 text-xs font-semibold uppercase tracking-wide dark:text-white",
+            isHome && section === "#project" && "dark:text-black"
           )}
           variant="ghost"
           size="icon"
-          aria-label="Switch language"
+          aria-label={t.accessibility.switchLanguage}
         >
           {mounted ? language : "en"}
-          <span className="sr-only">Switch language</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="z-[101] min-w-[6rem]" align="end">

@@ -4,7 +4,6 @@ import { Jost } from "next/font/google"
 import { LanguageProvider } from "@/providers/LanguageProvider"
 import { ThemeProvider } from "@/providers/ThemeProvider"
 import { JsonLd } from "@/components/JsonLd"
-import Loader from "@/components/Loader"
 import Header from "@/components/layouts/header"
 import "./globals.css"
 
@@ -23,11 +22,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Prastian Hidayat — AI & Web3 Engineer",
+    default: "Prastian Hidayat — AI & Full-Stack Developer",
     template: "%s | Prastian Hidayat",
   },
   description:
-    "AI & Web3 Engineer building autonomous agents, LLM-driven trading algorithms on Solana, and scalable Web3 infrastructure. Portfolio of Prastian Hidayat.",
+    "AI & Full-Stack Developer focused on AI-powered applications, custom agents, and workflow automation. Portfolio of Prastian Hidayat.",
   applicationName: "Prastian Hidayat Portfolio",
   generator: "Next.js",
   keywords: [
@@ -66,9 +65,9 @@ export const metadata: Metadata = {
     alternateLocale: "id_ID",
     url: SITE_URL,
     siteName: "Prastian Hidayat Portfolio",
-    title: "Prastian Hidayat — AI & Web3 Engineer",
+    title: "Prastian Hidayat — AI & Full-Stack Developer",
     description:
-      "AI & Web3 Engineer building autonomous agents, LLM-driven trading algorithms on Solana, and scalable Web3 infrastructure.",
+      "AI & Full-Stack Developer focused on AI-powered applications, custom agents, and workflow automation.",
     images: [
       {
         url: "/profile.png",
@@ -82,9 +81,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@prastianhd_",
     creator: "@prastianhd_",
-    title: "Prastian Hidayat — AI & Web3 Engineer",
+    title: "Prastian Hidayat — AI & Full-Stack Developer",
     description:
-      "AI & Web3 Engineer building autonomous agents, LLM-driven trading algorithms on Solana, and scalable Web3 infrastructure.",
+      "AI & Full-Stack Developer focused on AI-powered applications, custom agents, and workflow automation.",
     images: ["/profile.png"],
   },
   icons: {
@@ -107,7 +106,6 @@ export default function RootLayout({
       <body className={jost.className}>
         <Analytics />
         <JsonLd />
-        <Loader />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -1,161 +1,84 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "@/store/language"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
 import Image from "next/image"
-import { Project } from "./sections/ProjectSection"
+import Link from "next/link"
+import type { Project } from "@/lib/projects"
 
 interface Props {
   item: Project
 }
 
 export default function ProjectCard({ item }: Props) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [starCount, setStarCount] = useState<number>(0)
-  const { language } = useTranslation()
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: `70% bottom`,
-        },
-      })
-
-      tl.fromTo(
-        cardRef.current,
-        {
-          scale: 0,
-        },
-        {
-          scale: 1,
-          ease: "power1.inOut",
-        }
-      )
-    })
-
-    return () => ctx.revert()
-  }, [])
-
-  useEffect(() => {
-    let ignore = false
-    if (!item.githubApi) return
-    async function fetchData() {
-      try {
-        const response = await fetch(item.githubApi)
-        if (!response.ok) return
-        const data = await response.json()
-        const stargazersCount = data.stargazers_count
-
-        if (stargazersCount && !ignore) {
-          setStarCount(stargazersCount)
-        }
-      } catch {
-        // API error — silently ignore, star count stays 0
-      }
-    }
-
-    fetchData()
-    return () => {
-      ignore = true
-    }
-  }, [item.githubApi])
+  const { t, language } = useTranslation()
 
   return (
-    <div
-      ref={cardRef}
-      className="relative overflow-hidden col-span-1 w-full flex flex-col shadow-sm border rounded-[0.75rem] h-[380px]"
-    >
+    <article className="w-full min-w-0 flex flex-col overflow-hidden rounded-xl border border-gray-300 bg-white text-black shadow-sm">
       <a
-        href={item.liveURL || item.githubURL}
+        href={item.githubURL}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={`View ${item.title}`}
+        aria-label={`${t.project.source}: ${item.title}`}
       >
-        <Image priority alt={item.title} src={item.image} />
+        <Image
+          alt={item.title}
+          src={item.image}
+          sizes="(min-width: 1223px) 351px, (min-width: 1024px) calc((90vw - 48px) / 3), (min-width: 768px) calc((100vw - 104px) / 2), (min-width: 640px) calc(100vw - 80px), calc(100vw - 32px)"
+          className="w-full aspect-video object-cover"
+        />
       </a>
-
-      <div className="flex-1  group relative after:content-[''] after:rounded-full after:absolute after:content after:z-[10] after:w-[32px] after:h-[32px] after:bg-accentColor after:scale-[1] after:bottom-[-24px] after:right-[-24px] after:origin-center after:transition-transform after:duration-500 after:ease-out hover:after:scale-[25] overflow-hidden p-4 flex flex-col items-start justify-between">
-        <div className="w-full px-4 absolute left-[50%] -translate-x-1/2 z-20 flex flex-col gap-2 items-start ">
-          <div className="w-full flex justify-between items-center">
-            <div className="text-accentColor group-hover:text-white font-medium">
-              {item.title}
-            </div>
-            <div className="flex items-center group">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="scale-[0.7] group-hover:-rotate-12"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="#000000"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
-              </svg>
-              <div className="font-medium text-sm">{starCount}</div>
-            </div>
-          </div>
-          <div className="text-black text-sm group-hover:text-white">
-            {item.description[language]}
-          </div>
+      <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
+        <div className="flex flex-wrap gap-2 items-center">
+          {item.status && (
+            <span className="rounded-full border border-gray-300 px-3 py-1 text-xs">
+              {t.project.status[item.status]}
+            </span>
+          )}
+          {item.fork && (
+            <span className="rounded-full border border-gray-300 px-3 py-1 text-xs">
+              {t.project.customizedFork}
+            </span>
+          )}
         </div>
-
-        <div className="w-full px-4 left-[50%] -translate-x-1/2 bottom-[10%] absolute z-20 flex items-center justify-between">
-          <div className="flex flex-wrap flex-1 items-center gap-2">
-            {item.techStacks.map((tech, index) => {
-              return index % 2 === 0 ? (
-                <div
-                  key={index}
-                  className="px-2 py-[3px] shadow-sm border border-accentColor bg-white rounded-xl text-xs text-black whitespace-nowrap flex justify-center items-center"
-                >
-                  {tech}
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  className="px-2 py-[3px] shadow-sm bg-accentColor group-hover:border-[0.01px] rounded-xl text-xs text-white whitespace-nowrap flex justify-center items-center"
-                >
-                  {tech}
-                </div>
-              )
-            })}
-          </div>
-
+        <h3 className="text-xl font-medium break-words">{item.title}</h3>
+        <p className="text-sm leading-relaxed text-gray-700">{item.description[language]}</p>
+        <ul className="flex flex-wrap gap-2" aria-label={t.project.technologies}>
+          {item.techStacks.map((tech) => (
+            <li key={tech} className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">{tech}</li>
+          ))}
+        </ul>
+        <div className="mt-auto pt-3 flex flex-wrap gap-3">
+          {item.detail && (
+            <Link
+              href={`/projects/${item.detail.slug}`}
+              aria-label={`${t.project.viewDetails}: ${item.title}`}
+              className="inline-flex min-h-11 items-center rounded-md border border-gray-400 px-4 text-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+            >
+              {t.project.viewDetails}
+            </Link>
+          )}
+          <a
+            href={item.githubURL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${t.project.source}: ${item.title}`}
+            className="inline-flex min-h-11 items-center rounded-md border border-gray-400 px-4 text-sm hover:bg-gray-100"
+          >
+            {t.project.source}
+          </a>
           {item.liveURL && (
             <a
               href={item.liveURL}
-              title={`See '${item.title}' on Github`}
               target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2"
+              rel="noopener noreferrer"
+              aria-label={`${t.project.openProject}: ${item.title}`}
+              className="inline-flex min-h-11 items-center rounded-md bg-accentColor px-4 text-sm hover:brightness-95"
             >
-              <div className="group-hover:text-white">Visit</div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                className="opacity-75fill-black"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12.026 2c-5.509 0-9.974 4.465-9.974 9.974 0 4.406 2.857 8.145 6.821 9.465.499.09.679-.217.679-.481 0-.237-.008-.865-.011-1.696-2.775.602-3.361-1.338-3.361-1.338-.452-1.152-1.107-1.459-1.107-1.459-.905-.619.069-.605.069-.605 1.002.07 1.527 1.028 1.527 1.028.89 1.524 2.336 1.084 2.902.829.091-.645.351-1.085.635-1.334-2.214-.251-4.542-1.107-4.542-4.93 0-1.087.389-1.979 1.024-2.675-.101-.253-.446-1.268.099-2.64 0 0 .837-.269 2.742 1.021a9.582 9.582 0 0 1 2.496-.336 9.554 9.554 0 0 1 2.496.336c1.906-1.291 2.742-1.021 2.742-1.021.545 1.372.203 2.387.099 2.64.64.696 1.024 1.587 1.024 2.675 0 3.833-2.33 4.675-4.552 4.922.355.308.675.916.675 1.846 0 1.334-.012 2.41-.012 2.737 0 .267.178.577.687.479C19.146 20.115 22 16.379 22 11.974 22 6.465 17.535 2 12.026 2z"
-                ></path>
-              </svg>
+              {t.project.openProject}
             </a>
           )}
         </div>
       </div>
-    </div>
+    </article>
   )
 }

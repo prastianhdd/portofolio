@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "tsc && next build",
     "start": "next start",
-    "lint": "eslint app --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint app components hooks lib providers store --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "prepare": "husky install"
@@ -28,6 +28,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-rough-notation": "^1.0.5",
+    "sharp": "^0.35.5",
     "split-type": "^0.3.4",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",

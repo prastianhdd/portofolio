@@ -10,10 +10,6 @@ const navlinks: { key: keyof Dictionary["nav"]; href: string }[] = [
     href: "#project",
   },
   {
-    key: "updates",
-    href: "#blog",
-  },
-  {
     key: "contact",
     href: "#contact",
   },

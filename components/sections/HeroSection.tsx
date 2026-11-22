@@ -10,14 +10,13 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="w-full relative z-[50] min-h-screen bg-baseBackground pt-[4.5rem]"
+      className="w-full relative z-[50] min-h-screen bg-baseBackground pt-[4.5rem] pb-24 flex flex-col justify-center"
     >
       <Image
-        className="w-[38rem] absolute top-[6.5rem] md:top-[50%] left-[50%] -translate-x-1/2 md:-translate-y-1/2 select-none pointer-events-none"
-        alt="hero-background"
+        className="w-[38rem] max-w-full absolute top-[6.5rem] md:top-[50%] left-[50%] -translate-x-1/2 md:-translate-y-1/2 select-none pointer-events-none"
+        alt=""
         src={HeroLines}
-        priority
-        aria-label="Hero Background Illustration"
+        sizes="(min-width: 608px) 608px, 100vw"
       />
       <HeroTool />
       <HeroContent />

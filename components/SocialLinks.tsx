@@ -9,8 +9,8 @@ export default function SocialLinks() {
   const { t } = useTranslation()
   return (
     <>
-      <div className="fixed z-10 right-4 bottom-[5%] md:bottom-[20%]">
-        <div className="flex flex-col gap-6 items-center">
+      <div className="relative z-30 mt-4 px-4 md:mt-0 md:px-0 md:fixed md:z-10 md:right-4 md:bottom-[20%]">
+        <div className="flex flex-wrap justify-center gap-2 md:flex-col md:gap-4 items-center">
           {socialLinks.map((link) => (
             <Link
               key={link.id}
@@ -19,7 +19,7 @@ export default function SocialLinks() {
               aria-label={link.title}
               rel="noopener noreferrer"
               href={link.link}
-              className="scale-110 rounded link-outline flex flex-col items-center gap-0.5"
+              className="min-h-11 min-w-11 justify-center rounded link-outline flex flex-col items-center gap-0.5"
             >
               {link.svg}
               {link.badge && (
@@ -38,7 +38,7 @@ export default function SocialLinks() {
           style={{
             writingMode: "vertical-lr",
           }}
-          aria-label="blog"
+          aria-label={t.hero.contactStrip}
           className="flex text-xs group-hover:text-accentColor font-light tracking-[0.3em] items-center gap-2 dark:text-gray-400"
         >
           {t.hero.contactStrip}
@@ -49,7 +49,7 @@ export default function SocialLinks() {
       <div className="hidden md:block absolute bottom-4 right-4">
         <Link
           href="#project"
-          aria-label="project"
+          aria-label={t.hero.viewProject}
           className="flex items-center gap-2 dark:text-gray-400"
         >
           <span className="text-sm tracking-widest">{t.hero.viewProject}</span>
@@ -59,10 +59,10 @@ export default function SocialLinks() {
 
       <Link
         href="#about"
-        aria-label="about"
-        className="absolute animate-bounce text-gray-600 dark:text-gray-400 hover:text-accentColor cursor-pointer bottom-4 left-[50%] -translate-x-1/2"
+        aria-label={t.nav.about}
+        className="absolute min-h-11 min-w-11 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-accentColor cursor-pointer bottom-4 left-[50%] -translate-x-1/2"
       >
-        <div className="flex flex-col gap-1 items-center">
+        <div className="motion-safe:animate-bounce flex flex-col gap-1 items-center">
           <Mouse size={24} />
           <ArrowDown2 size={14} />
         </div>

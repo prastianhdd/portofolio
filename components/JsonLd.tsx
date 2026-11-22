@@ -5,16 +5,15 @@ export function JsonLd() {
     name: "Prastian Hidayat",
     url: "https://prastianhd.online",
     image: "https://prastianhd.online/profile.png",
-    jobTitle: "AI & Web3 Engineer",
+    jobTitle: "AI & Full-Stack Developer",
     description:
-      "AI & Web3 Engineer building autonomous agents, LLM-driven trading algorithms on Solana, and scalable Web3 infrastructure.",
+      "AI & Full-Stack Developer focused on AI-powered applications, custom agents, and workflow automation.",
     sameAs: [
       "https://github.com/PrastianHD",
       "https://x.com/prastianhd_",
       "https://www.linkedin.com/in/prastianhd",
     ],
     email: "prastianhd@gmail.com",
-    alumniOf: "Universitas Putra Bangsa",
     knowsAbout: [
       "Artificial Intelligence",
       "Web3",

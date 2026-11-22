@@ -16,33 +16,19 @@ export default function ContactSection() {
     gsap.registerPlugin(ScrollTrigger)
     const q = gsap.utils.selector(sectionRef)
 
-    const ctx = gsap.context(() => {
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          scrub: true,
-          onEnter: () => {
-            gsap.fromTo(
-              q(".title-animation"),
-              {
-                y: "200%",
-              },
-              {
-                y: 0,
-              }
-            )
-
-            gsap.fromTo(
-              q(".end-title"),
-              { scale: 0 },
-              { scale: 1, ease: "back.inOut" }
-            )
-          },
-        },
+    const media = gsap.matchMedia()
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.fromTo(q(".title-animation"), { y: "200%" }, {
+        y: 0,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+      })
+      gsap.fromTo(q(".end-title"), { scale: 0 }, {
+        scale: 1,
+        ease: "back.inOut",
+        scrollTrigger: { trigger: q(".end-title"), start: "top 90%", once: true },
       })
     })
-
-    return () => ctx.revert()
+    return () => media.revert()
   }, [])
 
   // Set Active Session
@@ -59,24 +45,38 @@ export default function ContactSection() {
     <section
       ref={sectionRef}
       id="contact"
-      className="max-h-max bg-gray-100 dark:bg-[#161D1F] py-[140px] px-10 lg:px-[5%]"
+      className="max-h-max bg-gray-100 dark:bg-[#161D1F] py-[140px] px-4 sm:px-10 lg:px-[5%]"
     >
-      <div className="w-full max-w-[1100px] h-full m-auto flex flex-col gap-40 items-center">
-        <div className="flex flex-col items-center gap-2">
+      <div className="w-full max-w-[1100px] h-full m-auto flex flex-col gap-20 items-center">
+        <div className="w-full">
+          <h2 className="text-3xl md:text-4xl font-medium dark:text-white mb-8 text-center">{t.contact.servicesHeading}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {t.contact.services.map((service) => (
+              <div key={service.title} className="rounded-xl border border-gray-300 dark:border-gray-700 p-6">
+                <h3 className="text-lg font-medium dark:text-white mb-3">{service.title}</h3>
+                <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">{service.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-4 text-center">
           <div className="overflow-hidden">
             <div className="title-animation dark:text-white text-lg">
               {t.contact.pre}
             </div>
           </div>
           <div className="overflow-hidden">
-            <div className="title-animation text-5xl navlink text-accentColor">
+            <h2 className="title-animation text-3xl md:text-5xl text-accentColor">
               {t.contact.heading}
-            </div>
+            </h2>
           </div>
+          <p className="max-w-2xl leading-relaxed text-gray-700 dark:text-gray-300">{t.contact.paragraph}</p>
+          <p className="text-sm dark:text-gray-400">{t.contact.availability}</p>
+          <a href="mailto:prastianhd@gmail.com" className="inline-flex min-h-11 items-center justify-center px-5 py-3 rounded-md bg-accentColor text-black font-medium mt-2">{t.contact.emailBtn}</a>
         </div>
 
         <div className="flex flex-col gap-8 items-center">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap justify-center items-center gap-4">
             <Link
               href="https://www.linkedin.com/in/prastianhd"
               target="_blank"
@@ -204,11 +204,6 @@ export default function ContactSection() {
               {t.contact.name}
             </div>
             <div className="dark:text-white text-sm">{t.contact.role}</div>
-          </div>
-          <div className="overflow-hidden flex justify-center items-center">
-            <div className="title-animation w-full md:max-w-[80%] text-center dark:text-gray-400">
-              {t.contact.paragraph}
-            </div>
           </div>
           <div className="end-title dark:text-white text-md">
             {t.contact.madeWith}

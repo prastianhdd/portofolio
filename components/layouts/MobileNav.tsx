@@ -7,20 +7,16 @@ import { useTranslation } from "@/store/language"
 import { useSectionStore } from "@/store/section"
 import { DownloadIcon } from "@radix-ui/react-icons"
 import { HambergerMenu } from "iconsax-react"
-import { useRouter } from "next/navigation"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "../ui/button"
 
 export default function MobileNav() {
   const [opened, setOpened] = useState<boolean>(false)
   const { section } = useSectionStore()
   const { t } = useTranslation()
-  const router = useRouter()
-
-  const goTo = (href: string) => {
-    router.push(href)
-    setOpened(false)
-  }
+  const isHome = usePathname() === "/"
 
   return (
     <Sheet open={opened} onOpenChange={setOpened}>
@@ -28,30 +24,31 @@ export default function MobileNav() {
         <Button
           className="dark:text-white h-11 w-11 px-0 flex justify-center items-center"
           variant="default"
-          aria-label="Toggle navigation menu"
+          aria-label={t.accessibility.openMenu}
         >
-          <HambergerMenu />
-          <span className="sr-only">Toggle navigation menu</span>
+          <HambergerMenu aria-hidden="true" />
         </Button>
       </SheetTrigger>
       <SheetContent
         style={{ zIndex: 1000 }}
-        className="w-full h-full flex flex-col [&>svg]:text-zinc-900 border-0"
+        closeLabel={t.accessibility.closeMenu}
+        className="w-full h-full max-h-[100dvh] overflow-y-auto flex flex-col border-0"
       >
-        <div className="text-xl pt-2">
+        <SheetTitle className="sr-only">{t.accessibility.navigation}</SheetTitle>
+        <SheetDescription className="sr-only">{t.accessibility.menuDescription}</SheetDescription>
+        <div className="text-xl pt-2 shrink-0">
           <span className="dark:text-white">Prastian</span>
           <span className="text-accentColor font-bold">.dev</span>
         </div>
-
-        <nav className="flex-1 flex flex-col justify-center gap-2">
+        <nav aria-label={t.accessibility.navigation} className="min-h-0 shrink-0 flex-1 flex flex-col justify-center gap-2 py-6">
           {navlinks.map((navLink) => {
-            const active = navLink.href === section
+            const active = isHome && navLink.href === section
             return (
-              <button
+              <Link
                 key={navLink.key}
-                type="button"
-                onClick={() => goTo(navLink.href)}
-                aria-current={active ? "page" : undefined}
+                href={`/${navLink.href}`}
+                onClick={() => setOpened(false)}
+                aria-current={active ? "location" : undefined}
                 className={cn(
                   "w-full text-left py-4 px-2 text-3xl font-medium border-b border-gray-200 dark:border-zinc-800 transition-colors",
                   active
@@ -60,29 +57,28 @@ export default function MobileNav() {
                 )}
               >
                 {t.nav[navLink.key]}
-              </button>
+              </Link>
             )
           })}
         </nav>
-
-        <div className="flex flex-col gap-3 pb-8">
+        <div className="flex shrink-0 flex-col gap-3 pb-8">
           <a
-            href="/Prastian-Hidayat-CV.pdf"
+            href="https://drive.google.com/drive/folders/1mcpduJNmaqj8v3n-clbxKU6qfMGdRXuN"
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t.hero.downloadCV}
             className="flex h-12 items-center justify-center gap-2 border border-accentColor text-accentColor hover:bg-accentColor hover:text-black transition-colors rounded-md"
           >
             <span>{t.hero.downloadCV}</span>
-            <DownloadIcon className="flex-none" />
+            <DownloadIcon className="flex-none" aria-hidden="true" />
           </a>
-          <button
-            type="button"
-            onClick={() => goTo("#contact")}
+          <Link
+            href="/#contact"
+            onClick={() => setOpened(false)}
             className="flex h-12 items-center justify-center bg-accentColor text-black font-medium rounded-md"
           >
             {t.hero.contactBtn}
-          </button>
+          </Link>
         </div>
       </SheetContent>
     </Sheet>

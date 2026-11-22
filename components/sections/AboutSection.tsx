@@ -22,95 +22,26 @@ export default function AboutSection() {
     gsap.registerPlugin(ScrollTrigger)
     const q = gsap.utils.selector(sectionRef)
 
-    new SplitType(q(".title"), {
-      types: "chars",
-      tagName: "span",
-    })
-
-    const ctx = gsap.context(() => {
+    const media = gsap.matchMedia()
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const split = new SplitType(q(".title"), { types: "chars", tagName: "span" })
       gsap.from(q(".title .char"), {
         opacity: 0.3,
         duration: 0.5,
         ease: "power1.out",
         stagger: 0.1,
-
-        scrollTrigger: {
-          trigger: q(".title"),
-          start: "top center",
-          scrub: true,
-        },
+        scrollTrigger: { trigger: q(".title"), start: "top center", scrub: true },
       })
-
       gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          scrub: true,
-          onEnter: () => {
-            const tl = gsap.timeline({
-              defaults: {
-                stagger: 0.2,
-                duration: 0.3,
-              },
-            })
-
-            tl.fromTo(
-              q(".image-animation"),
-              {
-                x: 200,
-              },
-              {
-                x: 0,
-              }
-            )
-
-            tl.fromTo(
-              q(".text-animation"),
-              {
-                y: 100,
-              },
-              {
-                y: 0,
-              }
-            )
-
-            tl.to(q(".experience-count"), {
-              innerText: 4,
-              duration: 0.5,
-              snap: {
-                innerText: 1,
-              },
-            })
-
-            tl.to(
-              q(".project-count"),
-              {
-                innerText: 65,
-                duration: 0.5,
-                snap: {
-                  innerText: 1,
-                },
-              },
-              "-=0.3"
-            )
-
-            tl.to(
-              q(".user-count"),
-              {
-                innerText: 146,
-                duration: 0.5,
-                snap: {
-                  innerText: 1,
-                },
-              },
-              "-=0.3"
-            )
-          },
-        },
+        defaults: { stagger: 0.2, duration: 0.3 },
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
       })
+        .fromTo(q(".image-animation"), { x: 200 }, { x: 0 })
+        .fromTo(q(".text-animation"), { y: 100 }, { y: 0 })
+      return () => split.revert()
     })
-
-    return () => ctx.revert()
-  }, [])
+    return () => media.revert()
+  }, [t.about.quote])
 
   // Set Active Session
   const aboutSectionOnView = useScrollActive(sectionRef)
@@ -124,11 +55,11 @@ export default function AboutSection() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative h-full bg-gray-100 dark:bg-[#161D1F] overflow-hidden py-14 px-10 lg:px-[5%]"
+      className="relative h-full bg-gray-100 dark:bg-[#161D1F] overflow-hidden py-14 px-4 sm:px-10 lg:px-[5%]"
     >
       <div className="w-full max-w-[1100px] h-full m-auto flex flex-col items-center gap-24">
-        <div className="relative title text-xl md:text-4xl tracking-tight font-medium w-fit dark:text-white">
-          {t.about.quote}
+        <div className="relative text-xl md:text-4xl tracking-tight font-medium w-fit dark:text-white">
+          <span key={t.about.quote} className="title">{t.about.quote}</span>
           <div className="absolute -right-[10px] top-2">
             <Image
               className="w-14 pointer-events-none select-none"
@@ -141,9 +72,9 @@ export default function AboutSection() {
           <div className="w-full flex flex-col items-start gap-7 md:gap-9">
             <div className="relative">
               <div className="overflow-hidden">
-                <div className="text-animation dark:text-accentColor text-3xl md:text-4xl font-medium">
+                <h2 className="text-animation dark:text-accentColor text-3xl md:text-4xl font-medium">
                   {t.about.heading}
-                </div>
+                </h2>
               </div>
 
               <div className="absolute -top-6 -left-8">
@@ -163,11 +94,11 @@ export default function AboutSection() {
             </div>
 
             <div className="flex flex-col items-start gap-4">
-              <div className="overflow-hidden">
-                <div className="dark:text-white text-animation">
-                  {t.about.bio}
-                </div>
-              </div>
+              {t.about.paragraphs.map((paragraph) => (
+                <p key={paragraph} className="dark:text-white leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
 
               <div className="overflow-hidden">
                 <div className="dark:text-white text-animation">
@@ -184,37 +115,14 @@ export default function AboutSection() {
               </div>
             </div>
 
-            <div className="w-full border-t-accentColor py-5 border-b-accentColor border-t-[0.01px] border-b-[0.01px] flex items-center gap-6 md:gap-6 lg:gap-20">
-              <div className="flex flex-col items-center">
-                <div className="text-3xl md:text-4xl font-medium dark:text-white">
-                  <span className="experience-count">0</span>{" "}
-                  <span className="text-accentColor">+</span>
+            <dl className="w-full border-y border-accentColor py-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {t.about.facts.map((fact) => (
+                <div key={fact.label}>
+                  <dt className="text-sm text-gray-600 dark:text-gray-400">{fact.label}</dt>
+                  <dd className="mt-1 font-medium dark:text-white">{fact.value}</dd>
                 </div>
-                <div className="dark:text-white text-sm">
-                  {t.about.yearsExperience}
-                </div>
-              </div>
-
-              <div className="flex flex-col font-medium items-center">
-                <div className="text-3xl md:text-4xl dark:text-white">
-                  <span className="project-count">0</span>{" "}
-                  <span className="text-accentColor">+</span>
-                </div>
-                <div className="dark:text-white text-sm">
-                  {t.about.publicRepos}
-                </div>
-              </div>
-
-              <div className="flex flex-col font-medium items-center">
-                <div className="text-3xl md:text-4xl dark:text-white">
-                  <span className="user-count">0</span>{" "}
-                  <span className="text-accentColor">+</span>
-                </div>
-                <div className="dark:text-white text-sm">
-                  {t.about.githubFollowers}
-                </div>
-              </div>
-            </div>
+              ))}
+            </dl>
           </div>
           <div className="w-full h-full flex justify-center items-center image-animation ">
             <div className="relative w-[180px] h-[170px] lg:w-[300px] lg:h-[290px]">
@@ -223,8 +131,8 @@ export default function AboutSection() {
                 className="absolute z-10 object-contain  w-full h-full shadow-sm rounded-sm"
                 width={300}
                 height={300}
-                priority
-                alt="prastian's profile"
+                sizes="(min-width: 1024px) 300px, 180px"
+                alt="Prastian Hidayat"
                 src={ProfileImage}
               />
 
